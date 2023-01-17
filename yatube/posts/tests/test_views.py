@@ -16,6 +16,7 @@ from yatube.settings import NUMBER_OF_PAGES
 User = get_user_model()
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
+
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
 class PostPagesTests(TestCase):
     @classmethod
@@ -34,7 +35,7 @@ class PostPagesTests(TestCase):
             content_type='image/gif'
         )
         cls.user = User.objects.create_user(username='test_author')
-        cls.user_sub = User.objects.create_user(username='test_author_follower')
+        cls.user_sub = User.objects.create_user(username='test_follower')
         cls.group = Group.objects.create(
             title='test_title',
             slug='test_slug',
@@ -157,7 +158,6 @@ class PostPagesTests(TestCase):
         first_object = response.context.get('post')
         self.check_post(first_object)
 
-
     def test_follow(self):
         """Проверка подписки пользователя на автора."""
         self.sub_client.get(
@@ -170,7 +170,6 @@ class PostPagesTests(TestCase):
                 author=self.user,
             ).exists()
         )
-
 
     def test_unfollow(self):
         """Проверка отписки пользователя на автора."""
@@ -194,7 +193,6 @@ class PostPagesTests(TestCase):
             ).exists()
         )
 
-
     def test_new_follwing_post(self):
         """Новая запись пользователя появляется в ленте тех,
         кто на него подписан"""
@@ -206,15 +204,16 @@ class PostPagesTests(TestCase):
         self.assertIn(self.post,
                       response.context.get('page_obj'))
 
-
     def test_new_follwing_post(self):
         """Новая запись пользователя не появляется в ленте тех,
         кто не подписан"""
         response = (
             self.sub_client.get(reverse('posts:follow_index'))
         )
-        self.assertNotIn(self.post,
-                      response.context.get('page_obj'))
+        self.assertNotIn(
+            self.post,
+            response.context.get('page_obj')
+        )
 
 
 class PaginatorViewsTest(TestCase):

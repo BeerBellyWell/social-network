@@ -2,7 +2,7 @@ from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 # from django.views.decorators.cache import cache_page
-from posts.models import Post, Group, User, Follow, Comment
+from posts.models import Post, Group, User, Follow
 from posts.forms import PostForm, CommentForm
 from yatube.settings import NUMBER_OF_PAGES
 
@@ -58,7 +58,6 @@ def post_detail(request, post_id):
         'post': post,
         'form': form,
         'comments': comments,
-        
     }
     return render(request, 'posts/post_detail.html', context)
 
@@ -71,15 +70,19 @@ def post_create(request):
             'form': form,
         }
         return render(request, 'posts/post_create.html', context)
-    form = PostForm(request.POST or None,
-            files=request.FILES or None,)
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,
+    )
     if form.is_valid():
         post = form.save(commit=False)
         post.author = request.user
         post.save()
         return redirect('posts:profile', request.user.get_username())
-    form = PostForm(request.POST or None,
-            files=request.FILES or None,)
+    form = PostForm(
+        request.POST or None,
+        files=request.FILES or None,
+    )
     context = {
         'form': form,
     }

@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from core.models import CreatedModel
 
 User = get_user_model()
 
@@ -84,9 +83,10 @@ class Comment(models.Model):
         auto_now_add=True,
         verbose_name='Дата публикации комментария',
     )
-        
+
     def __str__(self) -> str:
         return self.text
+
 
 class Follow(models.Model):
     user = models.ForeignKey(

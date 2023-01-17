@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from posts.models import *
+from posts.models import Post, Group, Comment, Follow
 
 
 class PostAdmin(admin.ModelAdmin):
