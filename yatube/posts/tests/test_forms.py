@@ -33,7 +33,7 @@ class PostCreateFormTests(TestCase):
     def setUp(self):
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
-
+    '''
     def test_comment_create(self):
         """Валидная форма создает комментарий"""
         self.post = Post.objects.create(
@@ -60,7 +60,7 @@ class PostCreateFormTests(TestCase):
                 author=self.user,
             ).exists()
         )
-
+    '''
     def test_post_create(self):
         """Валидная форма создает post с картинкой"""
         post_count = Post.objects.count()
@@ -120,3 +120,46 @@ class PostCreateFormTests(TestCase):
         self.assertEqual(post_edit.text, 'test_text_edit')
         self.assertEqual(post_edit.group.title, self.group.title)
         self.assertEqual(post_edit.author, self.user)
+
+
+class CommentFormTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='test_author')
+        cls.group = Group.objects.create(
+            title='test_title',
+            slug='test_slug',
+            description='test_description',
+        )
+
+    def setUp(self):
+        self.authorized_client = Client()
+        self.authorized_client.force_login(self.user)
+
+    def test_comment_create(self):
+        """Валидная форма создает комментарий"""
+        self.post = Post.objects.create(
+            author=self.user,
+            text='test_text',
+            group=self.group,
+        )
+        comment_count = Comment.objects.count()
+        form_data = {
+            'text': 'comment',
+        }
+        self.authorized_client.post(
+            reverse(
+                'posts:add_comment',
+                kwargs={'post_id': f'{self.post.pk}'}),
+            data=form_data,
+            follow=True,
+        )
+        self.assertEqual(Comment.objects.count(), comment_count + 1)
+        self.assertTrue(
+            Comment.objects.filter(
+                text='comment',
+                post=self.post.pk,
+                author=self.user,
+            ).exists()
+        )

@@ -174,9 +174,9 @@ class PostPagesTests(TestCase):
     def test_unfollow(self):
         """Проверка отписки пользователя на автора."""
         count_follow_0 = Follow.objects.all().count()
-        self.sub_client.get(
-            reverse('posts:profile_follow',
-                    kwargs={'username': self.user})
+        Follow.objects.create(
+            user=self.user_sub,
+            author=self.user,
         )
         count_follow_1 = Follow.objects.all().count()
         self.sub_client.get(

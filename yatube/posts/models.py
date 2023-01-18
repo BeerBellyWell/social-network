@@ -85,7 +85,7 @@ class Comment(models.Model):
     )
 
     def __str__(self) -> str:
-        return self.text
+        return self.text[:15]
 
 
 class Follow(models.Model):
@@ -99,3 +99,11 @@ class Follow(models.Model):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'author'], name='unique_follow')
+        ]
+
+    def __str__(self) -> str:
+        return f'{self.user} подписан на {self.author}'

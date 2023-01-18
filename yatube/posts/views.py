@@ -1,7 +1,6 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-# from django.views.decorators.cache import cache_page
 from posts.models import Post, Group, User, Follow
 from posts.forms import PostForm, CommentForm
 from yatube.settings import NUMBER_OF_PAGES
@@ -71,8 +70,8 @@ def post_create(request):
         }
         return render(request, 'posts/post_create.html', context)
     form = PostForm(
-        request.POST or None,
-        files=request.FILES or None,
+        request.POST,
+        files=request.FILES,
     )
     if form.is_valid():
         post = form.save(commit=False)
@@ -96,8 +95,8 @@ def post_edit(request, post_id):
         return redirect('posts:post_detail', post_id)
     if request.method == 'POST':
         form = PostForm(
-            request.POST or None,
-            files=request.FILES or None,
+            request.POST,
+            files=request.FILES,
             instance=post
         )
         if form.is_valid:
@@ -138,16 +137,15 @@ def follow_index(request):
 
 @login_required
 def profile_follow(request, username):
-    author = User.objects.get(username=username)
-    is_follow = Follow.objects.filter(user=request.user, author=author)
-    if not is_follow.exists() and request.user != author:
-        Follow.objects.create(user=request.user, author=author)
+    author = get_object_or_404(User, username=username)
+    if request.user != author:
+        Follow.objects.get_or_create(user=request.user, author=author)
     return redirect('posts:profile', username=author)
 
 
 @login_required
 def profile_unfollow(request, username):
-    author = User.objects.get(username=username)
+    author = get_object_or_404(User, username=username)
     is_follow = Follow.objects.filter(user=request.user, author=author)
     if is_follow.exists():
         is_follow.delete()
