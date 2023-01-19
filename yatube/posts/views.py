@@ -93,23 +93,33 @@ def post_edit(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     if post.author != request.user:
         return redirect('posts:post_detail', post_id)
-    if request.method == 'POST':
+    if request.method != 'POST':
         form = PostForm(
-            request.POST,
-            files=request.FILES,
-            instance=post
+            request.POST or None,
+            files=request.FILES or None,
+            instance=post,
         )
-        if form.is_valid:
-            form.save()
-            return redirect('posts:post_detail', post_id)
-    form = PostForm(instance=post)
-    context = {
-        'form': form,
-        'is_edit': True,
-        'post': post,
-    }
-    return render(request, 'posts/post_create.html', context)
-
+        context = {
+            'form': form,
+            'is_edit': True,
+            'post': post,
+        }
+        return render(request, 'posts/post_create.html', context)
+    form = PostForm(
+            request.POST or None,
+            files=request.FILES or None,
+            instance=post,
+        )
+    if not form.is_valid:
+        context = {
+            'form': form,
+            'is_edit': True,
+            'post': post,
+        }
+        return render(request, 'posts/post_create.html', context)
+    form.save()
+    return redirect('posts:post_detail', post_id)
+    
 
 @login_required
 def add_comment(request, post_id):

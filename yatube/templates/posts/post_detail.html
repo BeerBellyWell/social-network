@@ -43,9 +43,9 @@
          {{ post.text }}           
         </p>
         {% if post.author == user %}
-        <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">
-          редактировать запись
-        </a>
+          <a class="btn btn-primary" href="{% url 'posts:post_edit' post.pk %}">
+            редактировать запись
+          </a>
         {% endif %}
         {% if user.is_authenticated %}
           <div class="card my-4">
