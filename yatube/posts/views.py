@@ -106,10 +106,10 @@ def post_edit(request, post_id):
         }
         return render(request, 'posts/post_create.html', context)
     form = PostForm(
-            request.POST or None,
-            files=request.FILES or None,
-            instance=post,
-        )
+        request.POST or None,
+        files=request.FILES or None,
+        instance=post,
+    )
     if not form.is_valid:
         context = {
             'form': form,
@@ -119,7 +119,7 @@ def post_edit(request, post_id):
         return render(request, 'posts/post_create.html', context)
     form.save()
     return redirect('posts:post_detail', post_id)
-    
+
 
 @login_required
 def add_comment(request, post_id):
