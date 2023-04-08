@@ -1,9 +1,11 @@
+from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from posts.models import Post, Group, User, Follow
 from posts.forms import PostForm, CommentForm
 from yatube.settings import NUMBER_OF_PAGES
+from posts.serializers import PostSerializer
 
 
 def index(request):
@@ -160,3 +162,10 @@ def profile_unfollow(request, username):
     if is_follow.exists():
         is_follow.delete()
     return redirect('posts:profile', username=author)
+"""
+def get_post(request, pk):
+    if request.method == 'GET':
+        post = get_object_or_404(Post, id=pk)
+        serializer = PostSerializer(post)
+        return JsonResponse(serializer.data)
+"""
