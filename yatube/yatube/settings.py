@@ -13,7 +13,7 @@ NUMBER_OF_PAGES = 10
 CSRF_FAILURE_VIEW = 'core.views.csrf_failure'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, '/static/'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 # Quick-start development settings - unsuitable for production
@@ -29,8 +29,6 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
-    # 'www.beerbellywell.pythonanywhere.com',
-    # 'beerbellywell.pythonanywhere.com',
 ]
 
 
@@ -52,7 +50,6 @@ INSTALLED_APPS = [
     'core.apps.CoreConfig',
     'about.apps.AboutConfig',
     'sorl.thumbnail',
-    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -63,11 +60,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-]
-
-INTERNAL_IPS = [
-    '127.0.0.1',
 ]
 
 ROOT_URLCONF = 'yatube.urls'
